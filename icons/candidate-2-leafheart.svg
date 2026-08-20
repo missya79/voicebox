@@ -1,0 +1,12 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img">
+<title>맘숲놀이 아이콘 후보 2 - 잎사귀 하트</title>
+<rect x="0" y="0" width="512" height="512" rx="115" fill="#FAF8EC"/>
+<path d="M256,382 C190,332 140,272 150,207 C156,167 200,142 240,167 C252,174 256,187 256,202 Z" fill="#3E7452"/>
+<path d="M256,382 C322,332 372,272 362,207 C356,167 312,142 272,167 C260,174 256,187 256,202 Z" fill="#3E7452"/>
+<line x1="256" y1="204" x2="256" y2="356" stroke="#F5B93F" stroke-width="7" stroke-linecap="round"/>
+<line x1="256" y1="250" x2="222" y2="228" stroke="#F5B93F" stroke-width="5" stroke-linecap="round" opacity="0.85"/>
+<line x1="256" y1="250" x2="290" y2="228" stroke="#F5B93F" stroke-width="5" stroke-linecap="round" opacity="0.85"/>
+<line x1="256" y1="300" x2="216" y2="278" stroke="#F5B93F" stroke-width="5" stroke-linecap="round" opacity="0.85"/>
+<line x1="256" y1="300" x2="296" y2="278" stroke="#F5B93F" stroke-width="5" stroke-linecap="round" opacity="0.85"/>
+<circle cx="256" cy="196" r="10" fill="#F5B93F"/>
+</svg>

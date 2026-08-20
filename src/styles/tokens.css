@@ -1,0 +1,74 @@
+:root {
+  /* colors — design.md */
+  --color-background: #FAF8EC;
+  --color-on-background: #28321F;
+  --color-surface: #FAF8EC;
+  --color-surface-dim: #E8E4D2;
+  --color-surface-bright: #FCFBF3;
+  --color-surface-container-lowest: #FFFFFF;
+  --color-surface-container-low: #F8F6EA;
+  --color-surface-container: #F2EFDD;
+  --color-surface-container-high: #ECE8D3;
+  --color-surface-container-highest: #E6E1C8;
+  --color-surface-variant: #E6E1C8;
+  --color-on-surface: #28321F;
+  --color-on-surface-variant: #5C6350;
+  --color-outline: #B7AE8C;
+  --color-outline-variant: #DDD7BD;
+  --color-primary-gradient: linear-gradient(135deg, #4C8A61 0%, #3E7452 55%, #2F5A3E 100%);
+  --color-primary: #3E7452;
+  --color-on-primary: #FFFFFF;
+  --color-primary-container: #DCECDF;
+  --color-on-primary-container: #1F4A2C;
+  --color-secondary: #F5B93F;
+  --color-on-secondary: #28321F;
+  --color-secondary-container: #FDE8BE;
+  --color-on-secondary-container: #6B4700;
+  --color-tertiary: #B4703C;
+  --color-on-tertiary: #FFFFFF;
+  --color-tertiary-container: #F0DAC4;
+  --color-on-tertiary-container: #5C3414;
+  --color-error: #BA1A1A;
+  --color-on-error: #FFFFFF;
+  --color-error-container: #FFDAD6;
+  --color-on-error-container: #93000A;
+  --color-google-white: #FFFFFF;
+  --color-google-border: #DADCE0;
+  --color-google-text: #3C4043;
+
+  /* typography */
+  --font-display: 'Gaegu', sans-serif;
+  --font-body: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* rounded */
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+
+  /* spacing (요소 사이 간격 전용 — 컴포넌트 내부 패딩은 개별 지정) */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 40px;
+  --spacing-2xl: 64px;
+  --spacing-gutter: 16px;
+
+  /* shadow */
+  --shadow-sm: 0 1px 3px rgba(40, 50, 31, 0.08);
+  --shadow-md: 0 6px 16px rgba(40, 50, 31, 0.10), 0 2px 6px rgba(62, 116, 82, 0.06);
+  --shadow-lg: 0 16px 32px rgba(40, 50, 31, 0.14), 0 4px 10px rgba(62, 116, 82, 0.08);
+
+  /* border */
+  --border-hairline: 1px solid var(--color-outline-variant);
+  --border-emphasis: 1.5px solid var(--color-outline);
+  --border-focus: 2px solid var(--color-primary);
+  --border-dashed: 2px dashed var(--color-outline-variant);
+
+  /* breakpoints (참고용 — 실제 미디어쿼리는 각 CSS 파일에서 px로 사용) */
+  --breakpoint-tablet: 768px;
+  --breakpoint-desktop: 1024px;
+  --max-content-width: 1200px;
+}

@@ -1,0 +1,29 @@
+.footer {
+  margin-top: auto;
+  background: var(--color-surface-container-low);
+  border-top: var(--border-hairline);
+  padding: 36px 32px 44px;
+  text-align: center;
+  color: var(--color-on-surface-variant);
+}
+
+.name {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-on-background);
+}
+
+.intro {
+  margin: 6px 0 0;
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+@media (max-width: 600px) {
+  .footer {
+    padding: 28px 16px 32px;
+  }
+}

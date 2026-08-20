@@ -1,0 +1,17 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img">
+<title>맘숲놀이 아이콘 후보 3 - 숲 지구본</title>
+<defs>
+<clipPath id="globeClip">
+<circle cx="256" cy="256" r="126"/>
+</clipPath>
+</defs>
+<rect x="0" y="0" width="512" height="512" rx="115" fill="#FAF8EC"/>
+<circle cx="256" cy="256" r="140" fill="none" stroke="#3E7452" stroke-width="26"/>
+<g clip-path="url(#globeClip)">
+<line x1="130" y1="256" x2="382" y2="256" stroke="#3E7452" stroke-width="6" opacity="0.45"/>
+<ellipse cx="256" cy="256" rx="52" ry="126" fill="none" stroke="#3E7452" stroke-width="6" opacity="0.45"/>
+<ellipse cx="210" cy="210" rx="46" ry="62" fill="#3E7452" transform="rotate(-24 210 210)"/>
+<ellipse cx="312" cy="308" rx="40" ry="56" fill="#3E7452" transform="rotate(18 312 308)"/>
+</g>
+<circle cx="374" cy="150" r="17" fill="#F5B93F"/>
+</svg>

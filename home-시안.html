@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>우리 동네 목소리함 — 홈 화면 시안</title>
+<link rel="icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<style>
+  :root{
+    --color-bg:#FAF8EC;
+    --color-on-bg:#28321F;
+    --color-primary:#3E7452;
+    --color-on-primary:#FFFFFF;
+    --color-primary-container:#DCECDF;
+    --color-on-primary-container:#1F4A2C;
+    --color-secondary:#F5B93F;
+    --color-on-secondary:#28321F;
+    --color-secondary-container:#FDE8BE;
+    --color-on-secondary-container:#6B4700;
+    --color-tertiary:#B4703C;
+    --color-on-tertiary:#FFFFFF;
+    --color-tertiary-container:#F0DAC4;
+    --color-on-tertiary-container:#5C3414;
+    --color-surface-lowest:#FFFFFF;
+    --color-surface-low:#F8F6EA;
+    --color-surface:#F2EFDD;
+    --color-surface-high:#ECE8D3;
+    --color-outline:#B7AE8C;
+    --color-outline-variant:#DDD7BD;
+    --color-on-surface-variant:#5C6350;
+    --font-display:'Gaegu', sans-serif;
+    --font-body:'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+    --radius-sm:8px;
+    --radius:12px;
+    --radius-md:16px;
+    --radius-lg:24px;
+    --radius-full:9999px;
+    --shadow-sm:0 1px 3px rgba(40,50,31,0.08);
+    --shadow-md:0 6px 16px rgba(40,50,31,0.10), 0 2px 6px rgba(62,116,82,0.06);
+    --shadow-lg:0 16px 32px rgba(40,50,31,0.14), 0 4px 10px rgba(62,116,82,0.08);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--color-bg);
+    color:var(--color-on-bg);
+    font-family:var(--font-body);
+    -webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%;display:block;}
+  button, select{font-family:inherit;}
+
+  /* ---------- 시안 전환 탭바 (실제 서비스 UI 아님, 비교용 컨트롤) ---------- */
+  .demo-tabbar{
+    position:sticky; top:0; z-index:100;
+    display:flex; align-items:center; gap:8px;
+    padding:10px 16px;
+    background:#22281c;
+    flex-wrap:wrap;
+  }
+  .demo-tabbar .demo-label{
+    color:#c9d0bd; font-size:12px; margin-right:4px;
+  }
+  .tab-btn{
+    appearance:none; border:1px solid #445039; background:transparent;
+    color:#e7e6d6; padding:7px 14px; border-radius:var(--radius-full);
+    font-size:13px; cursor:pointer; transition:background .15s ease, color .15s ease;
+  }
+  .tab-btn:hover{ background:#3a4530; }
+  .tab-btn.active{
+    background:var(--color-secondary); color:var(--color-on-secondary);
+    border-color:var(--color-secondary); font-weight:700;
+  }
+
+  .variant{ display:none; }
+  .variant.active{ display:block; }
+
+  /* ---------- 공통 요소 ---------- */
+  .site-header{
+    display:flex; align-items:center; gap:10px;
+    padding:14px 24px;
+    background:var(--color-surface-lowest);
+    border-bottom:1px solid var(--color-outline-variant);
+    position:sticky; top:41px; z-index:10;
+  }
+  .brand-icon{ width:32px; height:32px; border-radius:var(--radius-sm); }
+  .brand-name{ font-weight:700; font-size:16px; }
+
+  .container{ max-width:1200px; margin:0 auto; padding:0 24px; }
+
+  .status-chip, .category-chip{
+    appearance:none; cursor:pointer; white-space:nowrap;
+    border:1px solid var(--color-outline-variant);
+    background:var(--color-surface-lowest);
+    color:var(--color-on-bg);
+    border-radius:var(--radius-full);
+    font-size:13px; padding:7px 14px;
+    transition:background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .status-chip.active{
+    background:var(--color-primary); border-color:var(--color-primary); color:var(--color-on-primary); font-weight:700;
+  }
+  .category-chip.active{
+    background:var(--color-tertiary); border-color:var(--color-tertiary); color:var(--color-on-tertiary); font-weight:700;
+  }
+  .filter-label{
+    font-size:12px; font-weight:600; color:var(--color-on-surface-variant);
+    margin:0 0 8px 2px;
+  }
+
+  .badge{
+    display:inline-flex; align-items:center; gap:4px;
+    border-radius:var(--radius-full);
+    font-size:12px; font-weight:600; padding:3px 10px;
+    white-space:nowrap;
+  }
+  .badge-status-접수{ background:var(--color-surface-high); color:var(--color-on-surface-variant); }
+  .badge-status-처리중{ background:var(--color-secondary-container); color:var(--color-on-secondary-container); }
+  .badge-status-완료{ background:var(--color-primary-container); color:var(--color-on-primary-container); }
+  .badge-category{ background:var(--color-tertiary-container); color:var(--color-on-tertiary-container); }
+
+  .photo-ph{
+    background:var(--color-surface-high);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; overflow:hidden;
+  }
+  .photo-ph svg{ width:28%; height:28%; color:var(--color-outline); }
+
+  .cta-btn{
+    appearance:none; cursor:pointer; border:none;
+    background:var(--color-primary); color:var(--color-on-primary);
+    font-family:var(--font-body); font-weight:700;
+    border-radius:var(--radius); box-shadow:var(--shadow-sm);
+  }
+
+  .empty-state{
+    display:none;
+    text-align:center; color:var(--color-on-surface-variant);
+    padding:48px 16px; font-size:14px;
+    border:1px dashed var(--color-outline-variant); border-radius:var(--radius-md);
+  }
+  .empty-state.show{ display:block; }
+
+  .site-footer{
+    border-top:1px solid var(--color-outline-variant);
+    background:var(--color-surface-low);
+    padding:28px 24px 32px;
+    color:var(--color-on-surface-variant);
+    font-size:13px; line-height:1.7;
+  }
+  .site-footer strong{ color:var(--color-on-bg); font-size:14px; }
+
+  /* ================================================================
+     시안 1 — 실속형 : 정보 밀도 높음 · 사진 작게 · 히어로 강한 한 줄
+     ================================================================ */
+  .v1 .site-header{ padding:10px 24px; }
+  .v1 .hero{
+    background:var(--color-primary);
+    color:var(--color-on-primary);
+    padding:36px 24px 32px;
+  }
+  .v1 .hero-inner{ max-width:1200px; margin:0 auto; }
+  .v1 .hero h1{
+    font-family:var(--font-display); font-size:clamp(26px,4vw,38px);
+    margin:0 0 10px; line-height:1.25;
+  }
+  .v1 .hero p{
+    margin:0 0 18px; font-size:14px; line-height:1.6;
+    color:var(--color-primary-container); max-width:560px;
+  }
+  .v1 .hero .cta-btn{ padding:11px 22px; font-size:14px; background:var(--color-secondary); color:var(--color-on-secondary); }
+
+  .v1 .filters{ padding:16px 24px 12px; }
+  .v1 .status-row{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+  .v1 .status-chip{ padding:6px 12px; font-size:12px; }
+  .v1 .category-row{
+    display:flex; gap:6px; overflow-x:auto; padding-bottom:4px;
+    scrollbar-width:thin;
+  }
+  .v1 .category-chip{ padding:6px 12px; font-size:12px; }
+
+  .v1 .list-section{ padding:8px 24px 36px; }
+  .v1 .card-grid{
+    display:grid; gap:12px;
+    grid-template-columns:repeat(auto-fill, minmax(210px,1fr));
+  }
+  .v1 .card{
+    background:var(--color-surface-lowest);
+    border:1px solid var(--color-outline-variant);
+    border-radius:var(--radius-sm);
+    padding:10px; box-shadow:var(--shadow-sm);
+    display:flex; flex-direction:column; gap:6px;
+  }
+  .v1 .card-top{ display:flex; gap:8px; }
+  .v1 .photo-ph{ width:44px; height:44px; border-radius:var(--radius-sm); }
+  .v1 .card-title{ font-size:13.5px; font-weight:700; margin:0; line-height:1.35; }
+  .v1 .card-excerpt{
+    font-size:12px; color:var(--color-on-surface-variant); margin:0;
+    line-height:1.5; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+  }
+  .v1 .card-badges{ display:flex; gap:4px; flex-wrap:wrap; }
+  .v1 .badge{ font-size:10.5px; padding:2px 8px; }
+  .v1 .card-meta{ font-size:11px; color:var(--color-on-surface-variant); display:flex; justify-content:space-between; margin-top:2px; }
+
+  .v1 .site-footer{ font-size:12px; padding:20px 24px 24px; }
+
+  /* ================================================================
+     시안 2 — 여유형 : 정보 밀도 낮음 · 사진 크게 · 히어로 차분한 안내
+     ================================================================ */
+  .v2 .site-header{ padding:20px 32px; }
+  .v2 .hero{
+    background:var(--color-surface-low);
+    padding:64px 32px;
+    text-align:center;
+  }
+  .v2 .hero-inner{ max-width:640px; margin:0 auto; }
+  .v2 .hero h1{
+    font-family:var(--font-display); font-size:clamp(24px,3.6vw,32px);
+    margin:0 0 18px; font-weight:700; color:var(--color-on-bg);
+  }
+  .v2 .hero p{
+    margin:0 0 28px; font-size:16px; line-height:1.85;
+    color:var(--color-on-surface-variant);
+  }
+  .v2 .hero .cta-btn{
+    background:transparent; color:var(--color-primary);
+    border:1.5px solid var(--color-primary); box-shadow:none;
+    padding:14px 32px; font-size:15px;
+  }
+
+  .v2 .filters{ padding:36px 32px 8px; max-width:1200px; margin:0 auto; }
+  .v2 .filter-label{ font-size:13px; }
+  .v2 .status-row{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:24px; }
+  .v2 .status-chip{ padding:9px 18px; font-size:14px; }
+
+  .v2 .category-wrap{
+    max-height:46px; overflow:hidden; transition:max-height .25s ease;
+    margin-bottom:10px;
+  }
+  .v2 .category-wrap.expanded{ max-height:300px; }
+  .v2 .category-row{ display:flex; gap:10px; flex-wrap:wrap; }
+  .v2 .category-chip{ padding:9px 18px; font-size:14px; }
+  .v2 .more-toggle{
+    appearance:none; border:none; background:none; cursor:pointer;
+    color:var(--color-primary); font-size:13px; font-weight:600; padding:4px 2px;
+    margin-bottom:28px;
+  }
+
+  .v2 .list-section{ max-width:1200px; margin:0 auto; padding:8px 32px 56px; }
+  .v2 .card-grid{
+    display:grid; gap:32px;
+    grid-template-columns:repeat(auto-fill, minmax(320px,1fr));
+  }
+  .v2 .card{
+    background:var(--color-surface-lowest);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-md);
+    overflow:hidden;
+    display:flex; flex-direction:column;
+  }
+  .v2 .photo-ph{ width:100%; aspect-ratio:16/9; }
+  .v2 .card-body{ padding:22px 22px 24px; display:flex; flex-direction:column; gap:12px; }
+  .v2 .card-badges{ display:flex; gap:8px; }
+  .v2 .badge{ padding:4px 12px; }
+  .v2 .card-title{ font-size:18px; font-weight:700; margin:0; line-height:1.4; }
+  .v2 .card-excerpt{
+    font-size:14.5px; color:var(--color-on-surface-variant); margin:0;
+    line-height:1.75; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;
+  }
+  .v2 .card-meta{
+    font-size:12.5px; color:var(--color-on-surface-variant);
+    display:flex; justify-content:space-between; margin-top:4px;
+    border-top:1px solid var(--color-outline-variant); padding-top:12px;
+  }
+
+  .v2 .site-footer{ text-align:center; padding:40px 32px 48px; }
+
+  /* ================================================================
+     시안 3 — 절차안내형 : 정보 밀도 중간 · 사진 중간(좌측) · 히어로 절차 설명
+     ================================================================ */
+  .v3 .site-header{ padding:14px 28px; }
+  .v3 .hero{
+    background:var(--color-bg);
+    padding:32px 28px 8px;
+    border-bottom:1px solid var(--color-outline-variant);
+  }
+  .v3 .hero-inner{ max-width:1200px; margin:0 auto; }
+  .v3 .hero h1{
+    font-family:var(--font-display); font-size:clamp(22px,3vw,28px);
+    margin:0 0 6px;
+  }
+  .v3 .hero > .hero-inner > p.hero-sub{
+    margin:0 0 22px; font-size:13.5px; color:var(--color-on-surface-variant);
+  }
+  .v3 .flow{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:12px;
+    margin-bottom:22px;
+  }
+  .v3 .flow-step{
+    background:var(--color-surface-lowest);
+    border:1px solid var(--color-outline-variant);
+    border-radius:var(--radius-md);
+    padding:14px 16px;
+  }
+  .v3 .flow-step .flow-badge{ margin-bottom:8px; }
+  .v3 .flow-step p{ margin:0; font-size:12.5px; color:var(--color-on-surface-variant); line-height:1.5; }
+  .v3 .flow-step h3{ margin:0 0 2px; font-size:14px; }
+  .v3 .hero-cta-row{ padding-bottom:26px; display:flex; }
+  .v3 .hero .cta-btn{ padding:12px 24px; font-size:14px; }
+
+  .v3 .filters{ padding:20px 28px 12px; max-width:1200px; margin:0 auto; display:flex; gap:24px; flex-wrap:wrap; align-items:flex-end; }
+  .v3 .filter-block{ flex:1; min-width:220px; }
+  .v3 .status-row{ display:flex; gap:8px; flex-wrap:wrap; }
+  .v3 .status-chip{ padding:7px 14px; font-size:13px; }
+  .v3 .category-select{
+    width:100%; padding:9px 12px; font-size:13.5px;
+    border:1px solid var(--color-outline-variant); border-radius:var(--radius);
+    background:var(--color-surface-lowest); color:var(--color-on-bg);
+  }
+
+  .v3 .list-section{ max-width:1200px; margin:0 auto; padding:8px 28px 48px; }
+  .v3 .card-grid{
+    display:grid; gap:14px;
+    grid-template-columns:repeat(auto-fill, minmax(280px,1fr));
+  }
+  .v3 .card{
+    background:var(--color-surface-lowest);
+    border:1px solid var(--color-outline-variant);
+    border-radius:var(--radius);
+    padding:14px; box-shadow:var(--shadow-sm);
+    display:flex; gap:12px;
+  }
+  .v3 .photo-ph{ width:84px; height:84px; border-radius:var(--radius-sm); }
+  .v3 .card-main{ flex:1; min-width:0; display:flex; flex-direction:column; gap:6px; }
+  .v3 .card-badges{ display:flex; gap:6px; }
+  .v3 .badge{ padding:3px 10px; font-size:11.5px; }
+  .v3 .card-title{ font-size:15px; font-weight:700; margin:0; }
+  .v3 .card-excerpt{
+    font-size:13px; color:var(--color-on-surface-variant); margin:0; line-height:1.55;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+  }
+  .v3 .card-meta{ font-size:11.5px; color:var(--color-on-surface-variant); display:flex; gap:10px; margin-top:2px; }
+
+  .v3 .site-footer{ padding:24px 28px 28px; font-size:12.5px; }
+
+  /* ================================================================
+     시안 4 — 산뜻조합형 : 시안1의 강한 배너 + 시안2의 여유로운 카드 내용
+     ================================================================ */
+  .v4 .site-header{ padding:18px 32px; }
+  .v4 .hero-wrap{ padding:28px 32px 0; }
+  .v4 .hero{
+    max-width:1200px; margin:0 auto;
+    background:linear-gradient(135deg, #4C8A61 0%, var(--color-primary) 55%, #2F5A3E 100%);
+    color:var(--color-on-primary);
+    border-radius:var(--radius-lg);
+    padding:52px 40px;
+    box-shadow:var(--shadow-md);
+    position:relative; overflow:hidden;
+    text-align:center;
+  }
+  .v4 .hero::before{
+    content:""; position:absolute; width:220px; height:220px; border-radius:50%;
+    background:rgba(255,255,255,0.08); top:-70px; right:-50px;
+  }
+  .v4 .hero::after{
+    content:""; position:absolute; width:150px; height:150px; border-radius:50%;
+    background:rgba(255,255,255,0.06); bottom:-60px; left:-30px;
+  }
+  .v4 .hero-inner{ max-width:600px; margin:0 auto; position:relative; z-index:1; }
+  .v4 .hero h1{
+    font-family:var(--font-display); font-size:clamp(28px,4vw,40px);
+    margin:0 0 14px; line-height:1.3;
+  }
+  .v4 .hero p{
+    margin:0 0 26px; font-size:15.5px; line-height:1.7;
+    color:var(--color-primary-container);
+  }
+  .v4 .hero .cta-btn{
+    background:var(--color-secondary); color:var(--color-on-secondary);
+    border-radius:var(--radius-full); padding:13px 30px; font-size:14.5px;
+  }
+
+  .v4 .filters{ padding:32px 32px 8px; max-width:1200px; margin:0 auto; }
+  .v4 .filter-label{ font-size:13px; }
+  .v4 .status-row{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:22px; }
+  .v4 .status-chip{ padding:9px 18px; font-size:14px; }
+  .v4 .category-wrap{
+    max-height:46px; overflow:hidden; transition:max-height .25s ease;
+    margin-bottom:10px;
+  }
+  .v4 .category-wrap.expanded{ max-height:300px; }
+  .v4 .category-row{ display:flex; gap:10px; flex-wrap:wrap; }
+  .v4 .category-chip{ padding:9px 18px; font-size:14px; }
+  .v4 .more-toggle{
+    appearance:none; border:none; background:none; cursor:pointer;
+    color:var(--color-primary); font-size:13px; font-weight:600; padding:4px 2px;
+    margin-bottom:24px;
+  }
+
+  .v4 .list-section{ max-width:1200px; margin:0 auto; padding:8px 32px 56px; }
+  .v4 .card-grid{
+    display:grid; gap:28px;
+    grid-template-columns:repeat(auto-fill, minmax(300px,1fr));
+  }
+  .v4 .card{
+    background:var(--color-surface-lowest);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-sm);
+    overflow:hidden;
+    display:flex; flex-direction:column;
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .v4 .card:hover{ transform:translateY(-4px); box-shadow:var(--shadow-lg); }
+  .v4 .photo-ph{ width:100%; aspect-ratio:16/9; }
+  .v4 .card-body{ padding:20px 20px 22px; display:flex; flex-direction:column; gap:10px; }
+  .v4 .card-badges{ display:flex; gap:8px; }
+  .v4 .badge{ padding:4px 12px; }
+  .v4 .card-title{ font-size:17px; font-weight:700; margin:0; line-height:1.4; }
+  .v4 .card-excerpt{
+    font-size:14px; color:var(--color-on-surface-variant); margin:0;
+    line-height:1.7; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;
+  }
+  .v4 .card-meta{
+    font-size:12.5px; color:var(--color-on-surface-variant);
+    display:flex; justify-content:space-between; margin-top:2px;
+    border-top:1px solid var(--color-outline-variant); padding-top:10px;
+  }
+
+  .v4 .site-footer{ text-align:center; padding:36px 32px 44px; }
+
+  /* ---------- 모바일 대응 ---------- */
+  @media (max-width:600px){
+    .site-header{ position:static; }
+    .v1 .hero, .v2 .hero, .v3 .hero{ padding-left:16px; padding-right:16px; }
+    .v4 .hero-wrap{ padding-left:16px; padding-right:16px; }
+    .v4 .hero{ padding:36px 24px; }
+    .v1 .filters, .v3 .filters{ padding-left:16px; padding-right:16px; }
+    .v2 .filters, .v4 .filters{ padding-left:16px; padding-right:16px; }
+    .v1 .list-section, .v2 .list-section, .v3 .list-section, .v4 .list-section{ padding-left:16px; padding-right:16px; }
+    .v1 .card-grid, .v2 .card-grid, .v3 .card-grid, .v4 .card-grid{ grid-template-columns:1fr; }
+    .v3 .flow{ grid-template-columns:1fr; }
+    .v2 .hero .cta-btn, .v1 .hero .cta-btn, .v3 .hero .cta-btn, .v4 .hero .cta-btn{ width:100%; }
+    .v3 .filters{ flex-direction:column; align-items:stretch; }
+    .v3 .card{ flex-direction:column; }
+    .v3 .photo-ph{ width:100%; height:140px; }
+  }
+</style>
+</head>
+<body>
+
+<svg style="display:none" aria-hidden="true">
+  <symbol id="icon-photo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+    <rect x="2.5" y="4.5" width="19" height="15" rx="2"/>
+    <circle cx="8" cy="10" r="1.6" fill="currentColor" stroke="none"/>
+    <path d="M4 17.5l5-5 3.5 3.5L17 11l3.5 4.5"/>
+  </symbol>
+</svg>
+
+<div class="demo-tabbar">
+  <span class="demo-label">홈 화면 시안 비교</span>
+  <button class="tab-btn active" data-target="v1">시안 1 · 실속형</button>
+  <button class="tab-btn" data-target="v2">시안 2 · 여유형</button>
+  <button class="tab-btn" data-target="v3">시안 3 · 절차안내형</button>
+  <button class="tab-btn" data-target="v4">시안 4 · 산뜻조합형</button>
+</div>
+
+<!-- ============================================================
+     시안 1 — 실속형
+     ============================================================ -->
+<main id="v1" class="variant v1 active">
+  <header class="site-header">
+    <img class="brand-icon" src="icons/icon-192.png" alt="">
+    <span class="brand-name">(주)맘숲놀이</span>
+  </header>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <h1>우리 동네, 말하면 바뀝니다</h1>
+      <p>가로등, 놀이터, 도로처럼 동네에서 겪은 불편을 남기면 (주)맘숲놀이가 확인하고 처리 상황을 알려드려요.</p>
+      <button type="button" class="cta-btn">의견 남기기</button>
+    </div>
+  </section>
+
+  <section class="filters">
+    <p class="filter-label">처리 상태</p>
+    <div class="status-row" role="group" aria-label="처리 상태 필터">
+      <button type="button" class="status-chip active" data-status="전체">전체</button>
+      <button type="button" class="status-chip" data-status="접수">접수</button>
+      <button type="button" class="status-chip" data-status="처리중">처리중</button>
+      <button type="button" class="status-chip" data-status="완료">완료</button>
+    </div>
+    <p class="filter-label">분야</p>
+    <div class="category-row" role="group" aria-label="분야 필터">
+      <button type="button" class="category-chip active" data-category="전체">전체</button>
+      <button type="button" class="category-chip" data-category="가로등·도로">가로등·도로</button>
+      <button type="button" class="category-chip" data-category="놀이터">놀이터</button>
+      <button type="button" class="category-chip" data-category="환경미화">환경미화</button>
+      <button type="button" class="category-chip" data-category="안전시설">안전시설</button>
+      <button type="button" class="category-chip" data-category="소음">소음</button>
+      <button type="button" class="category-chip" data-category="기타 제안">기타 제안</button>
+    </div>
+  </section>
+
+  <section class="list-section">
+    <div class="card-grid">
+      <article class="card" data-status="접수" data-category="가로등·도로">
+        <div class="card-top">
+          <div class="photo-ph"><svg><use href="#icon-photo"/></svg></div>
+          <div>
+            <h3 class="card-title">골목 가로등이 계속 꺼져 있어요</h3>
+          </div>
+        </div>
+        <p class="card-excerpt">저녁마다 산책하는데 골목 초입 가로등이 며칠째 안 켜져서 너무 어두워요. 확인 부탁드립니다.</p>
+        <div class="card-badges">
+          <span class="badge badge-status-접수">접수</span>
+          <span class="badge badge-category">가로등·도로</span>
+        </div>
+        <div class="card-meta"><span>김민준</span><span>2026.08.19</span></div>
+      </article>
+
+      <article class="card" data-status="처리중" data-category="놀이터">
+        <div class="card-top">
+          <div class="photo-ph"><svg><use href="#icon-photo"/></svg></div>
+          <div>
+            <h3 class="card-title">놀이터 그네가 삐걱거려요</h3>
+          </div>
+        </div>
+        <p class="card-excerpt">그네를 탈 때마다 삐걱거리는 소리가 크게 나고, 사슬 부분이 녹슬어 보여요.</p>
+        <div class="card-badges">
+          <span class="badge badge-status-처리중">처리중</span>
+          <span class="badge badge-category">놀이터</span>
+        </div>
+        <div class="card-meta"><span>이서윤</span><span>2026.08.15</span></div>
+      </article>
+
+      <article class="card" data-status="완료" data-category="환경미화">
+        <div class="card-top">
+          <div class="photo-ph"><svg><use href="#icon-photo"/></svg></div>
+          <div>
+            <h3 class="card-title">쓰레기통이 자주 넘쳐요</h3>
+          </div>
+        </div>
+        <p class="card-excerpt">공원 입구 쓰레기통이 주말마다 넘쳐서 냄새도 나고 지저분해요.</p>
+        <div class="card-badges">
+          <span class="badge badge-status-완료">완료</span>
+          <span class="badge badge-category">환경미화</span>
+        </div>
+        <div class="card-meta"><span>박도윤</span><span>2026.08.10</span></div>
+      </article>
+
+      <article class="card" data-status="접수" data-category="가로등·도로">
+        <div class="card-top">
+          <div class="photo-ph"><svg><use href="#icon-photo"/></svg></div>
+          <div>
+            <h3 class="card-title">인도 보도블록이 깨져 있어요</h3>
+          </div>
+        </div>
+        <p class="card-excerpt">유모차를 밀고 다니는데 보도블록이 깨진 곳이 많아서 걸려 넘어질 뻔했어요.</p>
+        <div class="card-badges">
+          <span class="badge badge-status-접수">접수</span>
+          <span class="badge badge-category">가로등·도로</span>
+        </div>
+        <div class="card-meta"><span>최지우</span><span>2026.08.20</span></div>
+      </article>
+
+      <article class="card" data-status="처리중" data-category="기타 제안">
+        <div class="card-top">
+          <div class="photo-ph"><svg><use href="#icon-photo"/></svg></div>
+          <div>
+            <h3 class="card-title">경로당 앞에 벤치를 늘려주세요</h3>
+          </div>
+        </div>
+        <p class="card-excerpt">어르신들이 쉴 자리가 부족해서 벤치를 몇 개 더 놓아주시면 좋겠어요.</p>
+        <div class="card-badges">
+          <span class="badge badge-status-처리중">처리중</span>
+          <span class="badge badge-category">기타 제안</span>
+        </div>
+        <div class="card-meta"><span>정하은</span><span>2026.08.12</span></div>
+      </article>
+    </div>
+    <p class="empty-state">조건에 맞는 의견이 아직 없어요.</p>
+  </section>
+
+  <footer class="site-footer">
+    <strong>(주)맘숲놀이</strong><br>
+    마음을 잇는 놀이 — 숲에서 시작해 세계로 이어지는 놀이<br>
+    © 2026 (주)맘숲놀이. 우리 동네 목소리함.
+  </footer>
+</main>
+
+<!-- ============================================================
+     시안 2 — 여유형
+     ============================================================ -->
+<main id="v2" class="variant v2">
+  <header class="site-header">
+    <img class="brand-icon" src="icons/icon-192.png" alt="">
+    <span class="brand-name">(주)맘숲놀이</span>
+  </header>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <h1>우리 동네 이야기를 들려주세요</h1>
+      <p>동네에서 지내다 보면 불편한 점이나 바꾸고 싶은 것들이 생기곤 합니다. 이곳에 남겨주시면 (주)맘숲놀이가 하나하나 살펴보고, 접수부터 처리 완료까지 진행 상황을 알려드립니다.</p>
+      <button type="button" class="cta-btn">의견 남기기</button>
+    </div>
+  </section>
+
+  <section class="filters">
+    <p class="filter-label">처리 상태</p>
+    <div class="status-row" role="group" aria-label="처리 상태 필터">
+      <button type="button" class="status-chip active" data-status="전체">전체</button>
+      <button type="button" class="status-chip" data-status="접수">접수</button>
+      <button type="button" class="status-chip" data-status="처리중">처리중</button>
+      <button type="button" class="status-chip" data-status="완료">완료</button>
+    </div>
+    <p class="filter-label">분야</p>
+    <div class="category-wrap">
+      <div class="category-row" role="group" aria-label="분야 필터">
+        <button type="button" class="category-chip active" data-category="전체">전체</button>
+        <button type="button" class="category-chip" data-category="가로등·도로">가로등·도로</button>
+        <button type="button" class="category-chip" data-category="놀이터">놀이터</button>
+        <button type="button" class="category-chip" data-category="환경미화">환경미화</button>
+        <button type="button" class="category-chip" data-category="안전시설">안전시설</button>
+        <button type="button" class="category-chip" data-category="소음">소음</button>
+        <button type="button" class="category-chip" data-category="기타 제안">기타 제안</button>
+      </div>
+    </div>
+    <button type="button" class="more-toggle" data-more>분야 더보기 ▾</button>
+  </section>
+
+  <section class="list-section">
+    <div class="card-grid">
+      <article class="card" data-status="접수" data-category="가로등·도로">
+        <div class="photo-ph"><svg><use href="#icon-photo"/></svg></div>
+        <div class="card-body">
+          <div class="card-badges">
+            <span class="badge badge-status-접수">접수</span>
+            <span class="badge badge-category">가로등·도로</span>
+          </div>
+          <h3 class="card-title">골목 가로등이 계속 꺼져 있어요</h3>
+          <p class="card-excerpt">저녁마다 산책하는데 골목 초입 가로등이 며칠째 안 켜져서 너무 어두워요. 확인 부탁드립니다.</p>
+          <div class="card-meta"><span>김민준</span><span>2026.08.19</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-status="처리중" data-category="놀이터">
+        <div class="photo-ph"><svg><use href="#icon-photo"/></svg></div>
+        <div class="card-body">
+          <div class="card-badges">
+            <span class="badge badge-status-처리중">처리중</span>
+            <span class="badge badge-category">놀이터</span>
+          </div>
+          <h3 class="card-title">놀이터 그네가 삐걱거려요</h3>
+          <p class="card-excerpt">그네를 탈 때마다 삐걱거리는 소리가 크게 나고, 사슬 부분이 녹슬어 보여요. 안전 점검이 필요할 것 같아요.</p>
+          <div class="card-meta"><span>이서윤</span><span>2026.08.15</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-status="완료" data-category="환경미화">
+        <div class="photo-ph"><svg><use href="#icon-photo"/></svg></div>
+        <div class="card-body">
+          <div class="card-badges">
+            <span class="badge badge-status-완료">완료</span>
+            <span class="badge badge-category">환경미화</span>
+          </div>
+          <h3 class="card-title">쓰레기통이 자주 넘쳐요</h3>
+          <p class="card-excerpt">공원 입구 쓰레기통이 주말마다 넘쳐서 냄새도 나고 지저분해요. 수거 주기를 늘려주시면 좋겠습니다.</p>
+          <div class="card-meta"><span>박도윤</span><span>2026.08.10</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-status="접수" data-category="가로등·도로">
+        <div class="photo-ph"><svg><use href="#icon-photo"/></svg></div>
+        <div class="card-body">
+          <div class="card-badges">
+            <span class="badge badge-status-접수">접수</span>
+            <span class="badge badge-category">가로등·도로</span>
+          </div>
+          <h3 class="card-title">인도 보도블록이 깨져 있어요</h3>
+          <p class="card-excerpt">유모차를 밀고 다니는데 보도블록이 깨진 곳이 많아서 걸려 넘어질 뻔했어요. 수리 부탁드려요.</p>
+          <div class="card-meta"><span>최지우</span><span>2026.08.20</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-status="처리중" data-category="기타 제안">
+        <div class="photo-ph"><svg><use href="#icon-photo"/></svg></div>
+        <div class="card-body">
+          <div class="card-badges">
+            <span class="badge badge-status-처리중">처리중</span>
+            <span class="badge badge-category">기타 제안</span>
+          </div>
+          <h3 class="card-title">경로당 앞에 벤치를 늘려주세요</h3>
+          <p class="card-excerpt">어르신들이 쉴 자리가 부족해서 벤치를 몇 개 더 놓아주시면 좋겠어요.</p>
+          <div class="card-meta"><span>정하은</span><span>2026.08.12</span></div>
+        </div>
+      </article>
+    </div>
+    <p class="empty-state">조건에 맞는 의견이 아직 없어요.</p>
+  </section>
+
+  <footer class="site-footer">
+    <strong>(주)맘숲놀이</strong><br>
+    마음을 잇는 놀이 — 숲에서 시작해 세계로 이어지는 놀이<br>
+    © 2026 (주)맘숲놀이. 우리 동네 목소리함.
+  </footer>
+</main>
+
+<!-- ============================================================
+     시안 3 — 절차안내형
+     ============================================================ -->
+<main id="v3" class="variant v3">
+  <header class="site-header">
+    <img class="brand-icon" src="icons/icon-192.png" alt="">
+    <span class="brand-name">(주)맘숲놀이</span>
+  </header>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <h1>동네 이야기가 해결되기까지</h1>
+      <p class="hero-sub">우리 동네 목소리함은 이렇게 운영돼요.</p>
+      <div class="flow">
+        <div class="flow-step">
+          <span class="badge badge-status-접수 flow-badge">접수</span>
+          <h3>남겨주신 의견을 확인해요</h3>
+          <p>제목과 내용, 사진을 등록하면 접수 상태로 표시돼요.</p>
+        </div>
+        <div class="flow-step">
+          <span class="badge badge-status-처리중 flow-badge">처리중</span>
+          <h3>내용을 살펴보고 처리해요</h3>
+          <p>(주)맘숲놀이가 관련 내용을 확인하고 처리를 진행해요.</p>
+        </div>
+        <div class="flow-step">
+          <span class="badge badge-status-완료 flow-badge">완료</span>
+          <h3>처리 결과를 알려드려요</h3>
+          <p>처리가 끝나면 완료 상태로 바뀌고 결과를 남겨드려요.</p>
+        </div>
+      </div>
+      <div class="hero-cta-row">
+        <button type="button" class="cta-btn">의견 남기기</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="filters">
+    <div class="filter-block">
+      <p class="filter-label">처리 상태</p>
+      <div class="status-row" role="group" aria-label="처리 상태 필터">
+        <button type="button" class="status-chip active" data-status="전체">전체</button>
+        <button type="button" class="status-chip" data-status="접수">접수</button>
+        <button type="button" class="status-chip" data-status="처리중">처리중</button>
+        <button type="button" class="status-chip" data-status="완료">완료</button>
+      </div>
+    </div>
+    <div class="filter-block">
+      <p class="filter-label">분야</p>
+      <select class="category-select" aria-label="분야 필터">
+        <option value="전체">분야 전체</option>
+        <option value="가로등·도로">가로등·도로</option>
+        <option value="놀이터">놀이터</option>
+        <option value="환경미화">환경미화</option>
+        <option value="안전시설">안전시설</option>
+        <option value="소음">소음</option>
+        <option value="기타 제안">기타 제안</option>
+      </select>
+    </div>
+  </section>
+
+  <section class="list-section">
+    <div class="card-grid">
+      <article class="card" data-status="접수" data-category="가로등·도로">
+        <div class="photo-ph"><svg><use href="#icon-photo"/></svg></div>
+        <div class="card-main">
+          <h3 class="card-title">골목 가로등이 계속 꺼져 있어요</h3>
+          <p class="card-excerpt">저녁마다 산책하는데 골목 초입 가로등이 며칠째 안 켜져서 너무 어두워요. 확인 부탁드립니다.</p>
+          <div class="card-badges">
+            <span class="badge badge-status-접수">접수</span>
+            <span class="badge badge-category">가로등·도로</span>
+          </div>
+          <div class="card-meta"><span>김민준</span><span>2026.08.19</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-status="처리중" data-category="놀이터">
+        <div class="photo-ph"><svg><use href="#icon-photo"/></svg></div>
+        <div class="card-main">
+          <h3 class="card-title">놀이터 그네가 삐걱거려요</h3>
+          <p class="card-excerpt">그네를 탈 때마다 삐걱거리는 소리가 크게 나고, 사슬 부분이 녹슬어 보여요.</p>
+          <div class="card-badges">
+            <span class="badge badge-status-처리중">처리중</span>
+            <span class="badge badge-category">놀이터</span>
+          </div>
+          <div class="card-meta"><span>이서윤</span><span>2026.08.15</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-status="완료" data-category="환경미화">
+        <div class="photo-ph"><svg><use href="#icon-photo"/></svg></div>
+        <div class="card-main">
+          <h3 class="card-title">쓰레기통이 자주 넘쳐요</h3>
+          <p class="card-excerpt">공원 입구 쓰레기통이 주말마다 넘쳐서 냄새도 나고 지저분해요.</p>
+          <div class="card-badges">
+            <span class="badge badge-status-완료">완료</span>
+            <span class="badge badge-category">환경미화</span>
+          </div>
+          <div class="card-meta"><span>박도윤</span><span>2026.08.10</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-status="접수" data-category="가로등·도로">
+        <div class="photo-ph"><svg><use href="#icon-photo"/></svg></div>
+        <div class="card-main">
+          <h3 class="card-title">인도 보도블록이 깨져 있어요</h3>
+          <p class="card-excerpt">유모차를 밀고 다니는데 보도블록이 깨진 곳이 많아서 걸려 넘어질 뻔했어요.</p>
+          <div class="card-badges">
+            <span class="badge badge-status-접수">접수</span>
+            <span class="badge badge-category">가로등·도로</span>
+          </div>
+          <div class="card-meta"><span>최지우</span><span>2026.08.20</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-status="처리중" data-category="기타 제안">
+        <div class="photo-ph"><svg><use href="#icon-photo"/></svg></div>
+        <div class="card-main">
+          <h3 class="card-title">경로당 앞에 벤치를 늘려주세요</h3>
+          <p class="card-excerpt">어르신들이 쉴 자리가 부족해서 벤치를 몇 개 더 놓아주시면 좋겠어요.</p>
+          <div class="card-badges">
+            <span class="badge badge-status-처리중">처리중</span>
+            <span class="badge badge-category">기타 제안</span>
+          </div>
+          <div class="card-meta"><span>정하은</span><span>2026.08.12</span></div>
+        </div>
+      </article>
+    </div>
+    <p class="empty-state">조건에 맞는 의견이 아직 없어요.</p>
+  </section>
+
+  <footer class="site-footer">
+    <strong>(주)맘숲놀이</strong><br>
+    마음을 잇는 놀이 — 숲에서 시작해 세계로 이어지는 놀이<br>
+    © 2026 (주)맘숲놀이. 우리 동네 목소리함.
+  </footer>
+</main>
+
+<!-- ============================================================
+     시안 4 — 산뜻조합형 (시안1 배너 + 시안2 내용)
+     ============================================================ -->
+<main id="v4" class="variant v4">
+  <header class="site-header">
+    <img class="brand-icon" src="icons/icon-192.png" alt="">
+    <span class="brand-name">(주)맘숲놀이</span>
+  </header>
+
+  <div class="hero-wrap">
+    <section class="hero">
+      <div class="hero-inner">
+        <h1>우리 동네, 말하면 바뀝니다</h1>
+        <p>가로등, 놀이터, 도로처럼 동네에서 겪은 불편을 남기면 (주)맘숲놀이가 확인하고 처리 상황을 알려드려요.</p>
+        <button type="button" class="cta-btn">의견 남기기</button>
+      </div>
+    </section>
+  </div>
+
+  <section class="filters">
+    <p class="filter-label">처리 상태</p>
+    <div class="status-row" role="group" aria-label="처리 상태 필터">
+      <button type="button" class="status-chip active" data-status="전체">전체</button>
+      <button type="button" class="status-chip" data-status="접수">접수</button>
+      <button type="button" class="status-chip" data-status="처리중">처리중</button>
+      <button type="button" class="status-chip" data-status="완료">완료</button>
+    </div>
+    <p class="filter-label">분야</p>
+    <div class="category-wrap">
+      <div class="category-row" role="group" aria-label="분야 필터">
+        <button type="button" class="category-chip active" data-category="전체">전체</button>
+        <button type="button" class="category-chip" data-category="가로등·도로">가로등·도로</button>
+        <button type="button" class="category-chip" data-category="놀이터">놀이터</button>
+        <button type="button" class="category-chip" data-category="환경미화">환경미화</button>
+        <button type="button" class="category-chip" data-category="안전시설">안전시설</button>
+        <button type="button" class="category-chip" data-category="소음">소음</button>
+        <button type="button" class="category-chip" data-category="기타 제안">기타 제안</button>
+      </div>
+    </div>
+    <button type="button" class="more-toggle" data-more>분야 더보기 ▾</button>
+  </section>
+
+  <section class="list-section">
+    <div class="card-grid">
+      <article class="card" data-status="접수" data-category="가로등·도로">
+        <div class="photo-ph"><svg><use href="#icon-photo"/></svg></div>
+        <div class="card-body">
+          <div class="card-badges">
+            <span class="badge badge-status-접수">접수</span>
+            <span class="badge badge-category">가로등·도로</span>
+          </div>
+          <h3 class="card-title">골목 가로등이 계속 꺼져 있어요</h3>
+          <p class="card-excerpt">저녁마다 산책하는데 골목 초입 가로등이 며칠째 안 켜져서 너무 어두워요. 확인 부탁드립니다.</p>
+          <div class="card-meta"><span>김민준</span><span>2026.08.19</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-status="처리중" data-category="놀이터">
+        <div class="photo-ph"><svg><use href="#icon-photo"/></svg></div>
+        <div class="card-body">
+          <div class="card-badges">
+            <span class="badge badge-status-처리중">처리중</span>
+            <span class="badge badge-category">놀이터</span>
+          </div>
+          <h3 class="card-title">놀이터 그네가 삐걱거려요</h3>
+          <p class="card-excerpt">그네를 탈 때마다 삐걱거리는 소리가 크게 나고, 사슬 부분이 녹슬어 보여요. 안전 점검이 필요할 것 같아요.</p>
+          <div class="card-meta"><span>이서윤</span><span>2026.08.15</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-status="완료" data-category="환경미화">
+        <div class="photo-ph"><svg><use href="#icon-photo"/></svg></div>
+        <div class="card-body">
+          <div class="card-badges">
+            <span class="badge badge-status-완료">완료</span>
+            <span class="badge badge-category">환경미화</span>
+          </div>
+          <h3 class="card-title">쓰레기통이 자주 넘쳐요</h3>
+          <p class="card-excerpt">공원 입구 쓰레기통이 주말마다 넘쳐서 냄새도 나고 지저분해요. 수거 주기를 늘려주시면 좋겠습니다.</p>
+          <div class="card-meta"><span>박도윤</span><span>2026.08.10</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-status="접수" data-category="가로등·도로">
+        <div class="photo-ph"><svg><use href="#icon-photo"/></svg></div>
+        <div class="card-body">
+          <div class="card-badges">
+            <span class="badge badge-status-접수">접수</span>
+            <span class="badge badge-category">가로등·도로</span>
+          </div>
+          <h3 class="card-title">인도 보도블록이 깨져 있어요</h3>
+          <p class="card-excerpt">유모차를 밀고 다니는데 보도블록이 깨진 곳이 많아서 걸려 넘어질 뻔했어요. 수리 부탁드려요.</p>
+          <div class="card-meta"><span>최지우</span><span>2026.08.20</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-status="처리중" data-category="기타 제안">
+        <div class="photo-ph"><svg><use href="#icon-photo"/></svg></div>
+        <div class="card-body">
+          <div class="card-badges">
+            <span class="badge badge-status-처리중">처리중</span>
+            <span class="badge badge-category">기타 제안</span>
+          </div>
+          <h3 class="card-title">경로당 앞에 벤치를 늘려주세요</h3>
+          <p class="card-excerpt">어르신들이 쉴 자리가 부족해서 벤치를 몇 개 더 놓아주시면 좋겠어요.</p>
+          <div class="card-meta"><span>정하은</span><span>2026.08.12</span></div>
+        </div>
+      </article>
+    </div>
+    <p class="empty-state">조건에 맞는 의견이 아직 없어요.</p>
+  </section>
+
+  <footer class="site-footer">
+    <strong>(주)맘숲놀이</strong><br>
+    마음을 잇는 놀이 — 숲에서 시작해 세계로 이어지는 놀이<br>
+    © 2026 (주)맘숲놀이. 우리 동네 목소리함.
+  </footer>
+</main>
+
+<script>
+  // 시안 전환 탭
+  document.querySelectorAll('.tab-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      document.querySelectorAll('.variant').forEach(function(v){ v.classList.remove('active'); });
+      document.getElementById(btn.dataset.target).classList.add('active');
+      window.scrollTo(0,0);
+    });
+  });
+
+  // 각 시안 안에서 처리상태 · 분야 필터 동작
+  document.querySelectorAll('.variant').forEach(function(root){
+    var activeStatus = '전체';
+    var activeCategory = '전체';
+    var cards = root.querySelectorAll('.card');
+    var empty = root.querySelector('.empty-state');
+
+    function applyFilter(){
+      var visible = 0;
+      cards.forEach(function(card){
+        var matchStatus = activeStatus === '전체' || card.dataset.status === activeStatus;
+        var matchCategory = activeCategory === '전체' || card.dataset.category === activeCategory;
+        var show = matchStatus && matchCategory;
+        card.style.display = show ? '' : 'none';
+        if(show) visible++;
+      });
+      if(empty) empty.classList.toggle('show', visible === 0);
+    }
+
+    root.querySelectorAll('.status-chip').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        root.querySelectorAll('.status-chip').forEach(function(b){ b.classList.remove('active'); });
+        btn.classList.add('active');
+        activeStatus = btn.dataset.status;
+        applyFilter();
+      });
+    });
+
+    root.querySelectorAll('.category-chip').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        root.querySelectorAll('.category-chip').forEach(function(b){ b.classList.remove('active'); });
+        btn.classList.add('active');
+        activeCategory = btn.dataset.category;
+        applyFilter();
+      });
+    });
+
+    var select = root.querySelector('.category-select');
+    if(select){
+      select.addEventListener('change', function(){
+        activeCategory = select.value;
+        applyFilter();
+      });
+    }
+
+    var moreBtn = root.querySelector('[data-more]');
+    if(moreBtn){
+      moreBtn.addEventListener('click', function(){
+        var wrap = root.querySelector('.category-wrap');
+        var expanded = wrap.classList.toggle('expanded');
+        moreBtn.textContent = expanded ? '분야 접기 ▴' : '분야 더보기 ▾';
+      });
+    }
+  });
+</script>
+</body>
+</html>

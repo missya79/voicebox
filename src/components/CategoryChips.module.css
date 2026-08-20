@@ -1,0 +1,56 @@
+.wrap {
+  max-height: 46px;
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+}
+
+.wrap.expanded {
+  max-height: 300px;
+}
+
+.row {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.chip {
+  appearance: none;
+  cursor: pointer;
+  white-space: nowrap;
+  border: var(--border-hairline);
+  background: var(--color-surface-container-lowest);
+  color: var(--color-on-background);
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-size: 14px;
+  padding: 9px 18px;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.chip:hover {
+  border-color: var(--color-outline);
+}
+
+.active {
+  background: var(--color-tertiary);
+  border-color: var(--color-tertiary);
+  color: var(--color-on-tertiary);
+  font-weight: 700;
+}
+
+.errorChip {
+  border-color: var(--color-error);
+}
+
+.moreToggle {
+  appearance: none;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--color-primary);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 2px;
+}
