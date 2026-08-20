@@ -354,7 +354,7 @@ components:
 **헤더** — `surface-container-lowest` 배경, 하단 `hairline` 테두리, 상하좌우 패딩 `18px 32px`, 아이콘 32×32px(rounded `sm`) + 단체명(`title` 계열, 16px/700). 페이지 최상단에 고정(sticky).
 
 **히어로** — 화면 끝까지 채우는 사각 블록이 아니라, 좌우 `32px` 여백(위 `28px`) 안에서 `rounded.lg` 카드로 띄운다. 배경은 `primary-gradient`, 안쪽 패딩 `52px 40px`, 그림자 `shadow.md`, 최대폭 1200px. 내부 텍스트 폭은 600px로 제한하고 가운데 정렬한다. 흰색 반투명 원형 장식을 배경 위에 1~2개 흐릿하게 겹친다.
-- 제목: `display`/`headline` 계열(Gaegu), `clamp(28px, 4vw, 40px)`, 굵기 700 — "우리 동네, 말하면 바뀝니다"
+- 제목: `display`/`headline` 계열(Gaegu), `clamp(34px, 6vw, 56px)`, 굵기 700 — "우리 동네, 말하면 바뀝니다" (배너에 어울리게 크게)
 - 설명: `body-md` 계열(15.5px), `primary-container` 색, 최대 2줄
 - CTA: `button-cta`(보조색, 알약형) — "의견 남기기"
 
