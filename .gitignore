@@ -15,6 +15,9 @@ dist-ssr
 # Environment variables
 .env
 
+# Image source archive (contents kept in img/)
+img.zip
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
