@@ -1,15 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import CategoryChips from '../components/CategoryChips';
 import { CATEGORIES } from '../data/categories';
+import { supabase } from '../lib/supabaseClient';
 import styles from './WritePage.module.css';
 
 function WritePage() {
+  const navigate = useNavigate();
   const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
   const [category, setCategory] = useState(null);
   const [content, setContent] = useState('');
   const [photo, setPhoto] = useState(null);
   const [photoUrl, setPhotoUrl] = useState(null);
   const [errors, setErrors] = useState({});
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -33,14 +39,51 @@ function WritePage() {
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const nextErrors = {};
     if (!title.trim()) nextErrors.title = '제목을 입력해 주세요.';
+    if (!author.trim()) nextErrors.author = '이름을 입력해 주세요.';
     if (!category) nextErrors.category = '분야를 선택해 주세요.';
     if (!content.trim()) nextErrors.content = '내용을 입력해 주세요.';
     setErrors(nextErrors);
-    // 저장 기능은 아직 연결하지 않았습니다. 필수값 검증까지만 동작합니다.
+    if (Object.keys(nextErrors).length > 0) return;
+
+    setSubmitting(true);
+    setSubmitError('');
+
+    try {
+      let uploadedPhotoUrl = null;
+      if (photo) {
+        const filePath = `${Date.now()}-${photo.name}`;
+        const { error: uploadError } = await supabase.storage
+          .from('photos')
+          .upload(filePath, photo);
+        if (uploadError) throw uploadError;
+        uploadedPhotoUrl = supabase.storage.from('photos').getPublicUrl(filePath).data
+          .publicUrl;
+      }
+
+      const { data, error } = await supabase
+        .from('opinions')
+        .insert({
+          title: title.trim(),
+          content: content.trim(),
+          author: author.trim(),
+          category,
+          photo_url: uploadedPhotoUrl,
+        })
+        .select()
+        .single();
+      if (error) throw error;
+
+      navigate(`/posts/${data.id}`);
+    } catch (error) {
+      setSubmitError('저장에 실패했어요. 잠시 후 다시 시도해 주세요.');
+      console.error(error);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -61,6 +104,21 @@ function WritePage() {
             placeholder="무엇이 불편했나요?"
           />
           {errors.title && <p className={styles.errorText}>{errors.title}</p>}
+        </div>
+
+        <div className={styles.field}>
+          <label className={styles.label} htmlFor="author">
+            이름
+          </label>
+          <input
+            id="author"
+            type="text"
+            className={`${styles.input} ${errors.author ? styles.inputError : ''}`}
+            value={author}
+            onChange={(event) => setAuthor(event.target.value)}
+            placeholder="이름을 입력해 주세요"
+          />
+          {errors.author && <p className={styles.errorText}>{errors.author}</p>}
         </div>
 
         <div className={styles.field}>
@@ -128,9 +186,11 @@ function WritePage() {
           />
         </div>
 
+        {submitError && <p className={styles.errorText}>{submitError}</p>}
+
         <div className={styles.submitRow}>
-          <button type="submit" className={styles.submit}>
-            저장하기
+          <button type="submit" className={styles.submit} disabled={submitting}>
+            {submitting ? '저장 중...' : '저장하기'}
           </button>
         </div>
       </form>
