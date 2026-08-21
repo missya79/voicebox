@@ -22,6 +22,10 @@ function WritePage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [loadingPost, setLoadingPost] = useState(isEdit);
+  const [aiOpen, setAiOpen] = useState(false);
+  const [aiDraft, setAiDraft] = useState('');
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState('');
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -69,6 +73,37 @@ function WritePage() {
     setPhotoUrl(null);
     setExistingPhotoUrl(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const handleAiGenerate = async () => {
+    if (!aiDraft.trim()) {
+      setAiError('짧게라도 무슨 일인지 적어주세요.');
+      return;
+    }
+
+    setAiLoading(true);
+    setAiError('');
+
+    try {
+      const response = await fetch('/api/ai-draft', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ draft: aiDraft.trim() }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'AI 초안 생성에 실패했어요.');
+
+      setTitle(result.title);
+      setContent(result.content);
+      setCategory(result.category);
+      setErrors({});
+      setAiOpen(false);
+      setAiDraft('');
+    } catch (error) {
+      setAiError(error.message);
+    } finally {
+      setAiLoading(false);
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -144,6 +179,34 @@ function WritePage() {
   return (
     <section className={styles.section}>
       <h1 className={styles.heading}>{isEdit ? '의견 수정' : '의견 쓰기'}</h1>
+
+      <div className={styles.aiWrap}>
+        <button type="button" className={styles.aiToggle} onClick={() => setAiOpen((prev) => !prev)}>
+          ✨ AI 작성도우미
+        </button>
+        {aiOpen && (
+          <div className={styles.aiPanel}>
+            <p className={styles.aiHint}>
+              짧게 무슨 일인지 적으면 제목·내용·분야를 채워드려요.
+            </p>
+            <textarea
+              className={styles.aiTextarea}
+              value={aiDraft}
+              onChange={(event) => setAiDraft(event.target.value)}
+              placeholder="예) 놀이터 그네 사슬 녹슬어서 위험함"
+            />
+            {aiError && <p className={styles.errorText}>{aiError}</p>}
+            <button
+              type="button"
+              className={styles.aiGenerate}
+              onClick={handleAiGenerate}
+              disabled={aiLoading}
+            >
+              {aiLoading ? '작성 중...' : '제목·본문 채우기'}
+            </button>
+          </div>
+        )}
+      </div>
 
       <form className={styles.form} onSubmit={handleSubmit} noValidate>
         <div className={styles.field}>
