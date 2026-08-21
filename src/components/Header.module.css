@@ -5,6 +5,74 @@
   background: var(--color-surface-container-lowest);
   border-bottom: var(--border-hairline);
   padding: 18px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.loginButton {
+  appearance: none;
+  cursor: pointer;
+  background: transparent;
+  border: var(--border-emphasis);
+  color: var(--color-primary);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: var(--radius);
+  padding: 10px 18px;
+}
+
+.signupButton {
+  appearance: none;
+  cursor: pointer;
+  border: none;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: var(--radius);
+  padding: 10px 18px;
+}
+
+.avatarLink {
+  display: inline-flex;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+}
+
+.avatarFallback {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 15px;
+}
+
+@media (max-width: 600px) {
+  .loginButton,
+  .signupButton {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
 }
 
 .brand {

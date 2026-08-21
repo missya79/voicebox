@@ -1,0 +1,8 @@
+.section {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 96px 32px;
+  text-align: center;
+  font-family: var(--font-body);
+  color: var(--color-on-surface-variant);
+}

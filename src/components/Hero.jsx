@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import styles from './Hero.module.css';
 
 function Hero() {
+  const { user } = useAuth();
+
   return (
     <div className={styles.wrap}>
       <section className={styles.hero}>
@@ -11,7 +14,7 @@ function Hero() {
             가로등, 놀이터, 도로처럼 동네에서 겪은 불편이나 제안을 남기면 (주)맘숲놀이가 확인하고,
             접수부터 처리 완료까지 상황을 알려드려요.
           </p>
-          <Link to="/write" className={styles.cta}>
+          <Link to={user ? '/write' : '/login'} className={styles.cta}>
             의견 남기기
           </Link>
         </div>

@@ -1,0 +1,58 @@
+.wrap {
+  max-width: 320px;
+  margin: 0 auto;
+  padding: var(--spacing-2xl) 0;
+  text-align: center;
+}
+
+.avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  margin: 0 auto var(--spacing-md);
+}
+
+.avatarFallback {
+  width: 88px;
+  height: 88px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 32px;
+  margin: 0 auto var(--spacing-md);
+}
+
+.name {
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-on-background);
+  margin: 0 0 var(--spacing-xs);
+}
+
+.email {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-on-surface-variant);
+  margin: 0 0 var(--spacing-xl);
+}
+
+.signOut {
+  appearance: none;
+  cursor: pointer;
+  background: transparent;
+  border: var(--border-emphasis);
+  color: var(--color-primary);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 15px;
+  border-radius: var(--radius);
+  padding: 12px 24px;
+  width: 100%;
+}

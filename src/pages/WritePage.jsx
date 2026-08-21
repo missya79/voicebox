@@ -1,22 +1,53 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import CategoryChips from '../components/CategoryChips';
 import { CATEGORIES } from '../data/categories';
 import { supabase } from '../lib/supabaseClient';
+import { useAuth } from '../context/AuthContext';
 import styles from './WritePage.module.css';
 
 function WritePage() {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const isEdit = Boolean(id);
+  const { user, profile } = useAuth();
+
   const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
   const [category, setCategory] = useState(null);
   const [content, setContent] = useState('');
   const [photo, setPhoto] = useState(null);
   const [photoUrl, setPhotoUrl] = useState(null);
+  const [existingPhotoUrl, setExistingPhotoUrl] = useState(null);
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  const [loadingPost, setLoadingPost] = useState(isEdit);
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    if (!isEdit) return;
+
+    async function loadPost() {
+      const { data, error } = await supabase
+        .from('opinions')
+        .select('*')
+        .eq('id', id)
+        .maybeSingle();
+
+      if (error || !data || data.user_id !== user.id) {
+        navigate('/mypage', { replace: true });
+        return;
+      }
+
+      setTitle(data.title);
+      setCategory(data.category);
+      setContent(data.content);
+      setExistingPhotoUrl(data.photo_url);
+      setLoadingPost(false);
+    }
+
+    loadPost();
+  }, [isEdit, id, user, navigate]);
 
   useEffect(() => {
     return () => {
@@ -36,6 +67,7 @@ function WritePage() {
     if (photoUrl) URL.revokeObjectURL(photoUrl);
     setPhoto(null);
     setPhotoUrl(null);
+    setExistingPhotoUrl(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -43,7 +75,6 @@ function WritePage() {
     event.preventDefault();
     const nextErrors = {};
     if (!title.trim()) nextErrors.title = '제목을 입력해 주세요.';
-    if (!author.trim()) nextErrors.author = '이름을 입력해 주세요.';
     if (!category) nextErrors.category = '분야를 선택해 주세요.';
     if (!content.trim()) nextErrors.content = '내용을 입력해 주세요.';
     setErrors(nextErrors);
@@ -53,31 +84,45 @@ function WritePage() {
     setSubmitError('');
 
     try {
-      let uploadedPhotoUrl = null;
+      let photoUrlToSave = existingPhotoUrl;
       if (photo) {
         const filePath = `${Date.now()}-${photo.name}`;
         const { error: uploadError } = await supabase.storage
           .from('photos')
           .upload(filePath, photo);
         if (uploadError) throw uploadError;
-        uploadedPhotoUrl = supabase.storage.from('photos').getPublicUrl(filePath).data
-          .publicUrl;
+        photoUrlToSave = supabase.storage.from('photos').getPublicUrl(filePath).data.publicUrl;
       }
 
-      const { data, error } = await supabase
-        .from('opinions')
-        .insert({
-          title: title.trim(),
-          content: content.trim(),
-          author: author.trim(),
-          category,
-          photo_url: uploadedPhotoUrl,
-        })
-        .select()
-        .single();
-      if (error) throw error;
-
-      navigate(`/posts/${data.id}`);
+      if (isEdit) {
+        const { error } = await supabase
+          .from('opinions')
+          .update({
+            title: title.trim(),
+            content: content.trim(),
+            category,
+            photo_url: photoUrlToSave,
+          })
+          .eq('id', id);
+        if (error) throw error;
+        navigate(`/posts/${id}`);
+      } else {
+        const author = profile?.display_name || user.user_metadata?.full_name || user.email;
+        const { data, error } = await supabase
+          .from('opinions')
+          .insert({
+            title: title.trim(),
+            content: content.trim(),
+            author,
+            category,
+            photo_url: photoUrlToSave,
+            user_id: user.id,
+          })
+          .select()
+          .single();
+        if (error) throw error;
+        navigate(`/posts/${data.id}`);
+      }
     } catch (error) {
       setSubmitError('저장에 실패했어요. 잠시 후 다시 시도해 주세요.');
       console.error(error);
@@ -86,9 +131,19 @@ function WritePage() {
     }
   };
 
+  if (loadingPost) {
+    return (
+      <section className={styles.section}>
+        <p>불러오는 중이에요...</p>
+      </section>
+    );
+  }
+
+  const previewUrl = photoUrl || existingPhotoUrl;
+
   return (
     <section className={styles.section}>
-      <h1 className={styles.heading}>의견 쓰기</h1>
+      <h1 className={styles.heading}>{isEdit ? '의견 수정' : '의견 쓰기'}</h1>
 
       <form className={styles.form} onSubmit={handleSubmit} noValidate>
         <div className={styles.field}>
@@ -104,21 +159,6 @@ function WritePage() {
             placeholder="무엇이 불편했나요?"
           />
           {errors.title && <p className={styles.errorText}>{errors.title}</p>}
-        </div>
-
-        <div className={styles.field}>
-          <label className={styles.label} htmlFor="author">
-            이름
-          </label>
-          <input
-            id="author"
-            type="text"
-            className={`${styles.input} ${errors.author ? styles.inputError : ''}`}
-            value={author}
-            onChange={(event) => setAuthor(event.target.value)}
-            placeholder="이름을 입력해 주세요"
-          />
-          {errors.author && <p className={styles.errorText}>{errors.author}</p>}
         </div>
 
         <div className={styles.field}>
@@ -148,10 +188,10 @@ function WritePage() {
 
         <div className={styles.field}>
           <label className={styles.label}>사진 (선택, 최대 1장)</label>
-          {photoUrl ? (
+          {previewUrl ? (
             <div className={styles.preview}>
-              <img src={photoUrl} alt="" className={styles.previewImage} />
-              <span className={styles.previewName}>{photo?.name}</span>
+              <img src={previewUrl} alt="" className={styles.previewImage} />
+              <span className={styles.previewName}>{photo?.name ?? '기존 사진'}</span>
               <button type="button" className={styles.previewRemove} onClick={handlePhotoRemove}>
                 삭제
               </button>

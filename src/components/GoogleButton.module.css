@@ -1,0 +1,18 @@
+.button {
+  appearance: none;
+  cursor: pointer;
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  background: var(--color-google-white);
+  color: var(--color-google-text);
+  border: 1px solid var(--color-google-border);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  border-radius: var(--radius);
+  padding: 12px 24px;
+}
