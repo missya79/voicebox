@@ -50,6 +50,7 @@
   font-weight: 700;
   line-height: 1.25;
   margin: 0 0 16px;
+  word-break: keep-all;
 }
 
 .subtitle {
